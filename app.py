@@ -364,7 +364,7 @@ if st.button("EFETUAR DIAGNÓSTICO"):
 
 st.markdown("---")
 st.subheader("📤 Enviar para Base de Dados")
-st.write("Clique abaixo para salvar este diagnóstico na base de dados do Sindicato.")
+st.write("Clique abaixo para salvar este diagnóstico na base de dados.")
 
 # O botão que aciona a gravação
 if st.button("🚀 Salvar Dados na Planilha"):
