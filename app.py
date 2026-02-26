@@ -382,7 +382,7 @@ if st.button("🚀 Salvar Dados na Planilha"):
             "Idade": idade,
             "Escolaridade": escolaridade,
             "Residencia": mun_moradia,
-            "Trabalho": m1_t,
+            "Trabalho": mun_trabalho,
             "Transporte_Total": f"{gasto_total:.2f}",
             "Salario_Bruto": f"{sal:.2f}",
             "Custo_Vida": f"{c_vida:.2f}",
