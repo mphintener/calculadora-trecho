@@ -299,7 +299,7 @@ if st.button("EFETUAR DIAGNÓSTICO"):
             "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
             "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
             "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
-            "Confisco_Total": f"{confi:.2f}"
+            "Confisco_Total": f"{confi:.2f}" # Agora ele vai reconhecer se o cálculo estiver fora de um 'if'
             }])
 
             # Envia para o Google Sheets usando a conexão do topo do arquivo
@@ -351,7 +351,7 @@ if st.button("EFETUAR DIAGNÓSTICO"):
             "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
             "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
             "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
-            "Confisco_Total": f"{confi:.2f}"
+            "Confisco_Total": f"{confi:.2f}" # Agora ele vai reconhecer se o cálculo estiver fora de um 'if'
             }])
             conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
         except Exception as e:
