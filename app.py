@@ -289,17 +289,17 @@ if st.button("EFETUAR DIAGNÓSTICO"):
             # Prepara a linha com as variáveis que você já calculou acima
             nova_entrada = pd.DataFrame([{
                 "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
-                "Genero": genero,
-                "Idade": idade,
-                "Escolaridade": escolaridade,
-                "Residencia": mun_moradia,
-                "Trabalho": mun_moradia,
-                "Transporte": meio_transporte,
-                "Salario_Nominal": f"{v_sal:.2f}",
-                "Tempo_Total": f"{h_m:.1f}",
-                "Custo_Mensal": f"{v_t:.2f}",
-                "Depreciacao_Percentual": f"{depre:.1f}",
-                "Confisco_Total": f"{confi:.2f}"
+            "Genero": genero,
+            "Idade": idade,
+            "Escolaridade": escolaridade,
+            "Residencia": mun_moradia,
+            "Residencia": dist_moradia, 
+            "Trabalho": mun_trabalho,
+            "Transporte_Total": f"{gasto_transporte_total:.2f}", # Soma de todos os campos
+            "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
+            "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
+            "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
+            "Confisco_Total": f"{confi:.2f}"
             }])
 
             # Envia para o Google Sheets usando a conexão do topo do arquivo
@@ -340,18 +340,18 @@ if st.button("EFETUAR DIAGNÓSTICO"):
             from datetime import datetime
             
             nova_entrada = pd.DataFrame([{
-                "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
-                "Genero": genero,
-                "Idade": idade,
-                "Escolaridade": escolaridade,
-                "Residencia": onde_mora,
-                "Trabalho": onde_trabalha,
-                "Transporte": meio_transporte,
-                "Salario_Nominal": f"{v_sal:.2f}",
-                "Tempo_Total": f"{h_m:.1f}",
-                "Custo_Mensal": f"{v_t:.2f}",
-                "Depreciacao_Percentual": f"{depre:.1f}",
-                "Confisco_Total": f"{confi:.2f}"
+            "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
+            "Genero": genero,
+            "Idade": idade,
+            "Escolaridade": escolaridade,
+            "Residencia": mun_moradia,
+            "Residencia": dist_moradia,  
+            "Trabalho": mun_trabalho,
+            "Transporte_Total": f"{gasto_transporte_total:.2f}", # Soma de todos os campos
+            "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
+            "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
+            "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
+            "Confisco_Total": f"{confi:.2f}"
             }])
             conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
         except Exception as e:
@@ -366,37 +366,34 @@ st.markdown("---")
 st.subheader("📤 Enviar para Base de Dados")
 st.write("Clique abaixo para salvar este diagnóstico na base de dados.")
 
-# O botão que aciona a gravação
 if st.button("🚀 Salvar Dados na Planilha"):
     try:
         from datetime import datetime
         
-        # 1. Organizamos os dados exatamente como você calculou acima
+        # Calculando o gasto total de transporte somando todos os campos
+        gasto_transporte_total = g_on + g_me + g_tr + g_ap + g_ca
+        
+        # Criando o DataFrame com as suas variáveis reais
         nova_entrada = pd.DataFrame([{
             "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
             "Genero": genero,
             "Idade": idade,
             "Escolaridade": escolaridade,
             "Residencia": mun_moradia,
+            "Residencia": dist_moradia
             "Trabalho": mun_trabalho,
-            "Transporte": meio_transporte,
-            "Salario_Nominal": f"{v_sal:.2f}",
-            "Tempo_Total": f"{h_m:.1f}",
-            "Custo_Mensal": f"{v_t:.2f}",
-            "Depreciacao_Percentual": f"{depre:.1f}",
+            "Transporte_Total": f"{gasto_transporte_total:.2f}", # Soma de todos os campos
+            "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
+            "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
+            "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
             "Confisco_Total": f"{confi:.2f}"
         }])
         
-        # 2. Conectamos e enviamos (Certifique-se que URL_PLANILHA está definida)
         conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
-        
-        # 3. Mensagem de Sucesso
-        st.success("✅ Diagnóstico registrado com sucesso!")
+        st.success("✅ Diagnóstico salvo com sucesso na base de dados!")
         st.balloons()
         
     except Exception as e:
-        # Mostra o erro caso a conexão falhe (ex: link errado ou falta de permissão)
         st.error(f"Erro ao salvar: {e}")
-        st.info("Verifique se o link da planilha nas 'Secrets' do Streamlit está correto.")
 
 # --- FIM DO CÓDIGO ---
