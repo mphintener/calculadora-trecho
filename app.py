@@ -381,7 +381,7 @@ if st.button("🚀 Salvar Dados na Planilha"):
             "Escolaridade": escolaridade,
             "Residencia": mun_moradia,
             "Residencia": dist_moradia
-            "Trabalho":  mun_trabalho,
+            "Trabalho": mun_trabalho,
             "Transporte_Total": f"{gasto_transporte_total:.2f}", # Soma de todos os campos
             "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
             "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
