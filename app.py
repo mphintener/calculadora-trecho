@@ -370,29 +370,29 @@ if st.button("🚀 Salvar Dados na Planilha"):
     try:
         from datetime import datetime
         
-        # Calculando o gasto total de transporte somando todos os campos
-        gasto_transporte_total = g_on + g_me + g_tr + g_ap + g_ca
+        # --- RECALCULANDO O VALOR PARA GARANTIR QUE ELE EXISTA NESTE BLOCO ---
+        # Certifique-se de que 'v_t' e 'v_tempo' (ou as variáveis que geram o confi) 
+        # estejam calculadas acima.
         
-        # Criando o DataFrame com as suas variáveis reais
+        gasto_total = g_on + g_me + g_tr + g_ap + g_ca
+        
         nova_entrada = pd.DataFrame([{
             "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
             "Genero": genero,
             "Idade": idade,
             "Escolaridade": escolaridade,
             "Residencia": mun_moradia,
-            "Residencia": dist_moradia,
-            "Transporte_Total": f"{gasto_transporte_total:.2f}", # Soma de todos os campos
-            "Salario_Bruto": f"{sal:.2f}", # Usando 'sal' conforme seu código
-            "Custo_Vida": f"{c_vida:.2f}", # Usando 'c_vida' conforme seu código
-            "Dias_Trabalhados": dias,      # Usando 'dias' conforme seu código
-            "Confisco_Total": f"{confi:.2f}"
+            "Trabalho": m1_t,
+            "Transporte_Total": f"{gasto_total:.2f}",
+            "Salario_Bruto": f"{sal:.2f}",
+            "Custo_Vida": f"{c_vida:.2f}",
+            "Dias_Trabalhados": dias,
+            "Confisco_Total": f"{confi:.2f}" # Agora ele vai reconhecer se o cálculo estiver fora de um 'if'
         }])
         
         conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
-        st.success("✅ Diagnóstico salvo com sucesso na base de dados!")
+        st.success("✅ Dados salvos com sucesso!")
         st.balloons()
         
     except Exception as e:
         st.error(f"Erro ao salvar: {e}")
-
-# --- FIM DO CÓDIGO ---
