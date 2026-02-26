@@ -194,7 +194,7 @@ st.markdown("""
 
 # 6. ENTRADA DE DADOS: PERFIL DO USUÁRIO (RESTAURADO)
 st.markdown("### 👤 PERFIL DO USUÁRIO")
-p1, p2, p3, p4, p5 = st.columns(4)
+p1, p2, p3, p4, p5 = st.columns(5)
 idade = p1.number_input("IDADE", min_value=14, step=1, value=None)
 genero = p2.selectbox("Gênero", ["Feminino","Masculino", "Não-binário", "Outro", "Prefiro não responder"])
 cor_raça = p3.selectbox("Cor_Raça", ["Branca", "Preta", "Parda", "Amarela", "Indígena"])
