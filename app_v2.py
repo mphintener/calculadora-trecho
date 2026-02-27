@@ -88,41 +88,37 @@ sal = r1.number_input("💰 SALÁRIO BRUTO (R$)", min_value=0.0)
 c_vida = r2.number_input("🏠 CUSTO DE VIDA (R$)", min_value=0.0)
 dias = r3.number_input("📅 DIAS TRABALHADOS/MÊS", value=22)
 
-# --- 5. LÓGICA, RESULTADOS E EXPORTAÇÃO ---
+# 5. LÓGICA E RESULTADOS
 if st.button("📊 EFETUAR DIAGNÓSTICO"):
-    if sal <= 0:
-        st.error("⚠️ Por favor, insira seu salário para calcular.")
-    else:
-        # Cálculos Matemáticos
-        gasto_d = g_on + g_me + g_tr + g_ap + g_ca
-        custo_m = gasto_d * dias
-        h_m = h_dia * dias
-        v_h_nom = sal / 176 if sal > 0 else 0
-        sal_liq_transp = sal - custo_m
-        sobra = sal_liq_transp - c_vida
-        v_h_re = sal_liq_transp / (176 + h_m) if (176 + h_m) > 0 else 0
+    if salario > 0:
+        # Cálculos
+        custo_m = gasto_transp * dias_mes
+        h_m = h_dia * dias_mes
+        v_h_nom = salario / 176
+        sal_liq = salario - custo_m
+        v_h_re = sal_liq / (176 + h_m)
         confi = custo_m + (h_m * v_h_nom)
-        depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
+        depre = (1 - (v_h_re / v_h_nom)) * 100
 
-        # 1. ALERTA DE EXPROPRIAÇÃO
-        st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin-bottom: 10px;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
-        
-        # 2. CAIXA DE RESULTADOS (IDÊNTICO AO QUE VOCÊ PEDIU)
+        # ALERTA VERMELHO
+        st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin: 10px 0;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
+
+        # RESULTADOS + NOTA TÉCNICA (HTML PURO PARA NÃO DAR ERRO)
         st.markdown(f"""
         <div class="report-box">
-            <h3 style="margin-top:0; color:#000 !important;">📋 RESULTADOS</h3>
-            <p style="color:#000 !important;">• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
-            <p style="color:#000 !important;">• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
-            <p style="color:#000 !important;">• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO NÃO PAGO):</b> R$ {confi:.2f}</p>
-            <p style="color:#000 !important;">• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq_transp:.2f}</p>
-            <p style="color:#000 !important;">• 📉 <b>SOBRA RESIDUAL (PÓS-TRANSPORTE):</b> R$ {sobra:.2f}</p>
-            <p style="color:#000 !important;">• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900;">{depre:.1f}%</span></p>
-            <p style="font-size:0.85rem; color:#666 !important; font-style:italic;">*Isso significa que sua força de trabalho vale {depre:.1f}% menos devido ao custo e tempo de deslocamento.</p>
+            <h3 style="margin-top:0;">📋 RESULTADOS</h3>
+            <p>• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
+            <p>• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
+            <p>• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
+            <p>• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
+            <p>• 📉 <b>SOBRA RESIDUAL (PÓS-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
+            <p>• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900;">{depre:.1f}%</span></p>
+            <p style="font-size:0.85rem; color:#666; font-style:italic;">*Isso significa que sua força de trabalho vale {depre:.1f}% menos devido ao deslocamento.</p>
             
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             
-            <h4 style="color:#000 !important;">📝 NOTA TÉCNICA</h4>
-            <div style="color: #333 !important; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
+            <h4 style="color:#000;">📝 NOTA TÉCNICA</h4>
+            <div style="color: #333; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
                 O <b>"Confisco"</b> calculado neste diagnóstico reflete o valor total subtraído do rendimento real do trabalhador. 
                 Ele não considera apenas a tarifa, mas o <b>valor monetário do tempo de vida</b> convertido em deslocamento. 
                 Na perspectiva da economia política, o trecho é <b>"trabalho não pago"</b>: um tempo obrigatório para a 
