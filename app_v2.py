@@ -11,15 +11,25 @@ st.markdown("""
     .stApp { background-color: #000000 !important; }
     .block-container { padding-top: 1rem !important; }
     label, p, span { color: #FFCC00 !important; font-weight: bold !important; }
-    .stNumberInput input, .stTextInput input, .stSelectbox div[data-baseweb="select"] {
+    
+    /* ESTILO DOS CAMPOS */
+    .stSelectbox div[data-baseweb="select"] {
+        background-color: #FFFFFF !important; 
+        color: #000000 !important;
+    }
+    .stNumberInput input, .stTextInput input {
         background-color: #000000 !important; color: #FFFFFF !important;
         border: none !important; border-bottom: 2px solid #FFCC00 !important;
     }
-    .stSelectbox div[data-baseweb="select"] { background-color: #FFFFFF !important; color: #000000 !important; }
+
+    /* BOTÃO GERAR DIAGNÓSTICO */
     .stButton>button { 
         background-color: #FFCC00 !important; color: #000000 !important; 
         font-weight: 900 !important; width: 100%; height: 3.5em; border-radius: 8px;
+        border: 2px solid #000000 !important;
     }
+
+    /* CAIXA DE RESULTADOS */
     .report-box { 
         background-color: #FFFFFF !important; padding: 25px; 
         border: 5px solid #FFCC00; border-radius: 10px; color: #000000 !important; 
@@ -63,7 +73,7 @@ gasto_transp = r4.number_input("🚍 GASTO TRANSP./DIA", min_value=0.0)
 # 5. LÓGICA E DIAGNÓSTICO
 if st.button("📊 EFETUAR DIAGNÓSTICO"):
     if salario > 0 and mun_moradia != " ":
-        # Cálculos
+        # Cálculos Matemáticos
         custo_m = gasto_transp * dias_mes
         h_m = h_dia * dias_mes
         v_h_nom = salario / 176
@@ -73,9 +83,9 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         depre = (1 - (v_h_re / v_h_nom)) * 100
 
         # Alerta Vermelho
-        st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin-bottom: 10px;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
+        st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin-bottom: 15px;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
 
-        # Resultados e Nota Técnica
+        # Caixa de Resultados (Protegida com f-strings corretas)
         st.markdown(f"""
         <div class="report-box">
             <h3 style="margin-top:0;">📋 RESULTADOS</h3>
@@ -84,11 +94,12 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
             <p>• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
             <p>• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
             <p>• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900; font-size:1.3rem;">{depre:.1f}%</span></p>
+            <p style="font-size:0.85rem; color:#666 !important; font-style:italic;">*Isso significa que sua força de trabalho vale {depre:.1f}% menos devido ao custo e tempo de deslocamento.</p>
             
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             
             <h4>📝 NOTA TÉCNICA</h4>
-            <div style="color: #333; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
+            <div style="color: #333 !important; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
                 O <b>"Confisco"</b> calculado neste diagnóstico reflete o valor total subtraído do rendimento real do trabalhador. 
                 Ele não considera apenas a tarifa, mas o <b>valor monetário do tempo de vida</b> convertido em deslocamento. 
                 Na perspectiva da economia política, o trecho é <b>"trabalho não pago"</b>: um tempo obrigatório para a 
@@ -98,8 +109,8 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         </div>
         """, unsafe_allow_html=True)
 
-        # Download
-        st.download_button("📥 BAIXAR NOTA TÉCNICA", f"Diagnóstico do Trecho\nConfisco: R$ {confi:.2f}\nDepreciação: {depre:.1f}%", file_name="diagnostico.txt")
+        # Download do Diagnóstico
+        st.download_button("📥 BAIXAR NOTA TÉCNICA", f"Diagnóstico: R$ {confi:.2f}\nDepreciação: {depre:.1f}%", file_name="diagnostico.txt")
     else:
-        st.error("⚠️ Preencha o salário e o município de moradia.")
+        st.error("⚠️ Por favor, preencha o salário e a localização.")
 
