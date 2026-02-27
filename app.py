@@ -94,43 +94,12 @@ c_vida = r2.number_input("🏠 CUSTO VIDA", 0.0)
 dias = r3.number_input("📅 DIAS/MÊS", 22)
 h_dia = r4.number_input("⏳ HORAS TRECHO (DIA)", 2.0)
 
-# FUNÇÃO AUXILIAR PARA SALVAR DADOS
-def salvar_na_planilha():
-    try:
-        gasto_d = g_on + g_me + g_tr + g_ap + g_ca
-        custo_m = gasto_d * dias
-        h_m = h_dia * dias
-        v_h_nom = sal / 176 if sal > 0 else 0
-        sal_liq = sal - custo_m
-        v_h_re = sal_liq / (176 + h_m) if (176 + h_m) > 0 else 0
-        confi = custo_m + (h_m * v_h_nom)
-        depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
-
-        nova_entrada = pd.DataFrame([{
-            "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
-            "Idade": idade,
-            "Genero": genero,
-            "Cor_Raca": cor_raca,
-            "Escolaridade": escolaridade,
-            "Setor": setor,
-            "Moradia": f"{mun_moradia} ({dist_moradia})",
-            "Trabalho": f"{mun_trabalho} ({dist_trabalho})",
-            "Salario_Bruto": f"{sal:.2f}",
-            "Transporte_Mensal": f"{custo_m:.2f}",
-            "Confisco_Total": f"{confi:.2f}",
-            "Depreciacao_%": f"{depre:.1f}"
-        }])
-        conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
-        return True
-    except:
-        return False
-
 # --- BOTÃO PRINCIPAL ---
 if st.button("📊 EFETUAR DIAGNÓSTICO"):
     if mun_moradia == " " or sal <= 0:
-        st.warning("⚠️ Dados incompletos.")
+        st.warning("⚠️ Dados incompletos. Verifique o município e o salário.")
     else:
-        # Cálculos
+        # Cálculos Internos
         gasto_d = g_on + g_me + g_tr + g_ap + g_ca
         custo_m = gasto_d * dias
         h_m = h_dia * dias
@@ -140,6 +109,7 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         confi = custo_m + (h_m * v_h_nom)
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
         
+        # Exibição do Diagnóstico
         st.markdown(f"""<div class="report-box">
             <h3>📋 DIAGNÓSTICO FINAL</h3>
             <p>• 💹 <b>VALOR HORA:</b> De R$ {v_h_nom:.2f} para R$ {v_h_re:.2f}</p>
@@ -147,18 +117,46 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
             <p>• 📉 <b>DEPRECIAÇÃO:</b> {depre:.1f}%</p>
         </div>""", unsafe_allow_html=True)
 
-        if salvar_na_planilha():
-            st.success("✅ Diagnóstico e Perfil exportados com sucesso!")
-        else:
-            st.info("💡 Diagnóstico concluído localmente.")
+        # SALVAMENTO AUTOMÁTICO NA PLANILHA
+        try:
+            nova_entrada = pd.DataFrame([{
+                "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
+                "Idade": idade if idade is not None else 0,
+                "Genero": genero,
+                "Cor_Raca": cor_raca,
+                "Escolaridade": escolaridade,
+                "Setor": setor,
+                "Origem": f"{mun_moradia}/{dist_moradia}",
+                "Destino": f"{mun_trabalho}/{dist_trabalho}",
+                "Salario": sal,
+                "Confisco": f"{confi:.2f}"
+            }])
+            conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
+            st.success("✅ Dados exportados para a base com sucesso!")
+        except Exception as e:
+            st.info(f"💡 Diagnóstico gerado (Exportação pendente: {e})")
 
         st.download_button("📥 BAIXAR NOTA TÉCNICA", f"Relatório de Confisco: R$ {confi:.2f}\nDepreciação: {depre:.1f}%", "nota_tecnica.txt")
 
-# --- SEÇÃO DE EXPORTAÇÃO MANUAL ---
+# --- EXPORTAÇÃO MANUAL NO FINAL ---
 st.markdown("---")
-st.subheader("📤 Ações de Base de Dados")
-if st.button("🚀 FORÇAR EXPORTAÇÃO PARA PLANILHA"):
-    if salvar_na_planilha():
-        st.success("✅ Dados sincronizados com a planilha!")
-    else:
-        st.error("❌ Erro ao conectar com a planilha. Verifique a URL e permissões.")
+if st.button("🚀 SINCRONIZAR COM PLANILHA (MANUAL)"):
+    try:
+        # Recalcula apenas o necessário para o envio
+        gasto_d = g_on + g_me + g_tr + g_ap + g_ca
+        custo_m = gasto_d * dias
+        h_m = h_dia * dias
+        v_h_nom = sal / 176 if sal > 0 else 0
+        confi = custo_m + (h_m * v_h_nom)
+        
+        man_entrada = pd.DataFrame([{
+            "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
+            "Idade": idade if idade is not None else 0,
+            "Genero": genero, "Cor_Raca": cor_raca, "Escolaridade": escolaridade, "Setor": setor,
+            "Origem": f"{mun_moradia}/{dist_moradia}", "Destino": f"{mun_trabalho}/{dist_trabalho}",
+            "Salario": sal, "Confisco": f"{confi:.2f}"
+        }])
+        conn.create(spreadsheet=URL_PLANILHA, data=man_entrada)
+        st.success("✅ Sincronização manual concluída!")
+    except Exception as e:
+        st.error(f"Erro na conexão: {e}")
