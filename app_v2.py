@@ -88,92 +88,83 @@ sal = r1.number_input("💰 SALÁRIO BRUTO (R$)", min_value=0.0)
 c_vida = r2.number_input("🏠 CUSTO DE VIDA (R$)", min_value=0.0)
 dias = r3.number_input("📅 DIAS TRABALHADOS/MÊS", value=22)
 
-# 5. LÓGICA E DIAGNÓSTICO (VERSÃO COM NOTA TÉCNICA RESTAURADA)
+# --- 5. LÓGICA, RESULTADOS E EXPORTAÇÃO ---
 if st.button("📊 EFETUAR DIAGNÓSTICO"):
-    if mun_moradia == " " or sal <= 0:
-        st.warning("⚠️ Selecione os municípios e insira seu salário.")
+    if sal <= 0:
+        st.error("⚠️ Por favor, insira seu salário para calcular.")
     else:
-        # CÁLCULOS
+        # Cálculos Matemáticos
         gasto_d = g_on + g_me + g_tr + g_ap + g_ca
         custo_m = gasto_d * dias
         h_m = h_dia * dias
         v_h_nom = sal / 176 if sal > 0 else 0
         sal_liq_transp = sal - custo_m
+        sobra = sal_liq_transp - c_vida
         v_h_re = sal_liq_transp / (176 + h_m) if (176 + h_m) > 0 else 0
         confi = custo_m + (h_m * v_h_nom)
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
 
-        # VETOR DE FLUXO VISUAL
-        d_mor = (dist_moradia or "").upper()
-        d_tra = (dist_trabalho or "").upper()
-        label_m = d_mor if mun_moradia == mun_trabalho else f"{mun_moradia.upper()} ({d_mor})"
-        label_t = d_tra if mun_moradia == mun_trabalho else f"{mun_trabalho.upper()} ({d_tra})"
-
-        st.markdown(f"""
-        <div style="background:#000; padding:25px; border:2px solid #E63946; text-align:center; margin: 20px 0;">
-            <div style="color:#FFCC00; font-weight:bold; font-size:1.6rem;">🏠 {label_m} ———▶ 💼 {label_t}</div>
-        </div>""", unsafe_allow_html=True)
-
-        # RESULTADOS E NOTA TÉCNICA
+        # 1. ALERTA DE EXPROPRIAÇÃO
+        st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin-bottom: 10px;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
+        
+        # 2. CAIXA DE RESULTADOS (IDÊNTICO AO QUE VOCÊ PEDIU)
         st.markdown(f"""
         <div class="report-box">
-            <h3 style="color:#000; border-bottom: 2px solid #FFCC00; padding-bottom:10px;">📋 DIAGNÓSTICO FINAL</h3>
-            <p>• 💹 <b>VALOR DA HORA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946; font-weight:bold;">R$ {v_h_re:.2f}</span></p>
-            <p>• ⏳ <b>TEMPO NÃO PAGO:</b> {h_m:.1f}h/mês dedicadas ao deslocamento.</p>
-            <p>• 💸 <b>CONFISCO MENSAL:</b> R$ {confi:.2f} (Tarifa + Tempo de Vida)</p>
-            <p>• 📉 <b>DEPRECIAÇÃO REAL:</b> <span style="color:#E63946; font-weight:900; font-size:1.4rem;">{depre:.1f}%</span></p>
+            <h3 style="margin-top:0; color:#000 !important;">📋 RESULTADOS</h3>
+            <p style="color:#000 !important;">• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
+            <p style="color:#000 !important;">• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
+            <p style="color:#000 !important;">• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO NÃO PAGO):</b> R$ {confi:.2f}</p>
+            <p style="color:#000 !important;">• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq_transp:.2f}</p>
+            <p style="color:#000 !important;">• 📉 <b>SOBRA RESIDUAL (PÓS-TRANSPORTE):</b> R$ {sobra:.2f}</p>
+            <p style="color:#000 !important;">• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900;">{depre:.1f}%</span></p>
+            <p style="font-size:0.85rem; color:#666 !important; font-style:italic;">*Isso significa que sua força de trabalho vale {depre:.1f}% menos devido ao custo e tempo de deslocamento.</p>
             
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             
-            <h4 style="color:#000;">📑 NOTA TÉCNICA</h4>
-            <div style="color: #333; font-family: serif; font-size: 1rem; line-height: 1.6; text-align: justify;">
+            <h4 style="color:#000 !important;">📝 NOTA TÉCNICA</h4>
+            <div style="color: #333 !important; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
                 O <b>"Confisco"</b> calculado neste diagnóstico reflete o valor total subtraído do rendimento real do trabalhador. 
                 Ele não considera apenas a tarifa, mas o <b>valor monetário do tempo de vida</b> convertido em deslocamento. 
                 Na perspectiva da economia política, o trecho é <b>"trabalho não pago"</b>: um tempo obrigatório para a 
-                reprodução da força de trabalho que não é remunerado, gerando uma depreciação real no valor da sua hora contratada.
+                reprodução da força de trabalho que não é remunerado, gerando uma depreciação real de 
+                <span style="color: #E63946; font-weight: bold;">{depre:.1f}%</span> no valor da sua hora contratada.
             </div>
-            <p style="font-size:0.85rem; color:#666; margin-top:10px; font-style:italic;">
-                *Cálculo baseado na jornada padrão de 176h/mês acrescida do tempo de trecho mensal.
-            </p>
         </div>
         """, unsafe_allow_html=True)
 
-        # MOTOR DE SALVAMENTO (UNIFICADO)
+        # 3. EXPORTAÇÃO AUTOMÁTICA (SILENCIOSA)
         try:
             nova_entrada = pd.DataFrame([{
                 "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
                 "Genero": genero, "Idade": idade, "Raca": cor_raça, 
                 "Escolaridade": escolaridade, "Setor": setor,
-                "Moradia": f"{mun_moradia}/{dist_moradia}", 
-                "Trabalho": f"{mun_trabalho}/{dist_trabalho}",
-                "Salario": f"{sal:.2f}", "Confisco": f"{confi:.2f}",
-                "Depreciacao": f"{depre:.1f}%"
+                "Moradia": mun_moradia, "Trabalho": mun_trabalho, 
+                "Salario": f"{sal:.2f}", "Confisco": f"{confi:.2f}"
             }])
             conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
-            st.toast("✅ Sincronizado com a base de dados!", icon="💾")
+            st.toast("✅ Sincronizado com a base de dados!")
         except:
             pass
 
-        # BOTÃO DE DOWNLOAD
-        relatorio_txt = f"DIAGNÓSTICO TÉCNICO\n\nIdade: {idade}\nSetor: {setor}\nConfisco Mensal: R$ {confi:.2f}\nDepreciação: {depre:.1f}%"
-        st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico.txt")
-
-# 6. EXPORTAÇÃO MANUAL (OPCIONAL)
+# --- 6. EXPORTAÇÃO MANUAL (FINAL DO ARQUIVO) ---
 st.markdown("---")
-if st.button("🚀 SINCRONIZAR COM PLANILHA (MANUAL)"):
+st.subheader("📤 Enviar para Base de Dados")
+st.write("Clique abaixo para salvar este diagnóstico na base de dados manualmente.")
+
+if st.button("🚀 Salvar Dados na Planilha"):
     try:
-        # Recalcula apenas o necessário
+        # Recalcula o confisco para garantir que a variável exista neste contexto
         gasto_total = g_on + g_me + g_tr + g_ap + g_ca
         conf_manual = (gasto_total * dias) + ((h_dia * dias) * (sal/176 if sal>0 else 0))
         
         man_entrada = pd.DataFrame([{
             "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
-            "Idade": idade, "Genero": genero, "Residencia": mun_moradia,
-            "Trabalho": mun_trabalho, "Transporte_Total": f"{gasto_total*dias:.2f}",
+            "Genero": genero, "Idade": idade, "Setor": setor,
+            "Residencia": mun_moradia, "Trabalho": mun_trabalho,
             "Salario": f"{sal:.2f}", "Confisco": f"{conf_manual:.2f}"
         }])
         conn.create(spreadsheet=URL_PLANILHA, data=man_entrada)
         st.success("✅ Dados salvos com sucesso!")
         st.balloons()
     except Exception as e:
-        st.error(f"Erro: {e}")
+        st.error(f"Erro ao salvar: {e}")
