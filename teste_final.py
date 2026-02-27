@@ -14,6 +14,20 @@ st.markdown("""
     .stApp { background-color: #000000 !important; }
     .block-container { padding-top: 1rem !important; margin-top: -40px !important; }
     
+    /* 1. FAZ O CURSOR (O PALITINHO QUE PISCA) FICAR VISÍVEL EM AMARELO */
+    input {
+        caret-color: #FFCC00 !important;
+    }
+
+    /* 2. EFEITO DE FOCO: O CAMPO "ACENDE" QUANDO O USUÁRIO ESTÁ NELE */
+    .stNumberInput input:focus, 
+    .stTextInput input:focus, 
+    .stSelectbox div[data-baseweb="select"]:focus-within {
+        border-bottom: 3px solid #FFFFFF !important; /* Muda a borda para branco ao focar */
+        box-shadow: 0px 0px 15px rgba(255, 204, 0, 0.8) !important; /* Brilho amarelo ao redor */
+        transition: 0.3s ease-in-out;
+        background-color: #1a1a1a !important; /* Escurece levemente o fundo do campo ativo */
+    }
     /* TEXTOS EM AMARELO */
     label, p, span { color: #FFCC00 !important; font-weight: bold !important; }
     
