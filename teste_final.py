@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 from streamlit_gsheets import GSheetsConnection
 from datetime import datetime
-
 # 1. CONEXÃO E CONFIGURAÇÃO
 st.set_page_config(page_title="Calculadora do Trecho", layout="wide")
 conn = st.connection("gsheets", type=GSheetsConnection)
