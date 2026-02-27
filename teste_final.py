@@ -69,7 +69,7 @@ with col_logo:
 # 3. ENTRADA DE DADOS: PERFIL COMPLETO
 st.markdown("### 👤 PERFIL DO USUÁRIO")
 p1, p2, p3, p4, p5 = st.columns(5)
-idade = p1.number_input("IDADE", min_value=14, step=1, value=25, help="Use TAB para navegar entre os campos")
+idade = p1.number_input("IDADE", min_value=14, step=1, value=None, help="Use TAB para navegar entre os campos")
 genero = p2.selectbox("GÊNERO", ["Feminino","Masculino", "Não-binário", "Outro", "Prefiro não responder"])
 cor_raca = p3.selectbox("COR/RAÇA", ["Branca", "Preta", "Parda", "Amarela", "Indígena"])
 escolaridade = p4.selectbox("ESCOLARIDADE", ["Fundamental Incompleto", "Fundamental Completo", "Médio Incompleto", "Médio Completo", "Técnico", "Superior Incompleto", "Superior Completo", "Pós-Graduação"])
