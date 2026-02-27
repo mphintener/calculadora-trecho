@@ -88,10 +88,11 @@ sal = r1.number_input("💰 SALÁRIO BRUTO (R$)", min_value=0.0)
 c_vida = r2.number_input("🏠 CUSTO DE VIDA (R$)", min_value=0.0)
 dias = r3.number_input("📅 DIAS TRABALHADOS/MÊS", value=22)
 
-# 5. LÓGICA E RESULTADOS
+# --- SUBSTITUA O BLOCO DE CÁLCULO POR ESTE PADRONIZADO ---
 if st.button("📊 EFETUAR DIAGNÓSTICO"):
+    # Verificamos se 'salario' existe (ajuste o nome se o seu input for 'sal')
     if salario > 0:
-        # Cálculos
+        # Padronização das variáveis para o cálculo
         custo_m = gasto_transp * dias_mes
         h_m = h_dia * dias_mes
         v_h_nom = salario / 176
@@ -103,22 +104,21 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         # ALERTA VERMELHO
         st.markdown("""<div style="background-color: #E63946; color: white; padding: 15px; text-align: center; font-weight: bold; border-radius: 5px; margin: 10px 0;">🚨 ALERTA DE EXPROPRIAÇÃO MENSAL</div>""", unsafe_allow_html=True)
 
-        # RESULTADOS + NOTA TÉCNICA (HTML PURO PARA NÃO DAR ERRO)
+        # RESULTADOS + NOTA TÉCNICA (SEM CÓDIGO APARECENDO)
         st.markdown(f"""
         <div class="report-box">
-            <h3 style="margin-top:0;">📋 RESULTADOS</h3>
-            <p>• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
-            <p>• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
-            <p>• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
-            <p>• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
-            <p>• 📉 <b>SOBRA RESIDUAL (PÓS-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
-            <p>• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900;">{depre:.1f}%</span></p>
-            <p style="font-size:0.85rem; color:#666; font-style:italic;">*Isso significa que sua força de trabalho vale {depre:.1f}% menos devido ao deslocamento.</p>
+            <h3 style="margin-top:0; color:#000 !important;">📋 RESULTADOS</h3>
+            <p style="color:#000 !important;">• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
+            <p style="color:#000 !important;">• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
+            <p style="color:#000 !important;">• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
+            <p style="color:#000 !important;">• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq:.2f}</p>
+            <p style="color:#000 !important;">• 📉 <b>SOBRA RESIDUAL:</b> R$ {sal_liq:.2f}</p>
+            <p style="color:#000 !important;">• 📉 <b>DEPRECIAÇÃO REAL DO VALOR/HORA:</b> <span style="color:#E63946; font-weight:900;">{depre:.1f}%</span></p>
             
             <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             
-            <h4 style="color:#000;">📝 NOTA TÉCNICA</h4>
-            <div style="color: #333; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
+            <h4 style="color:#000 !important;">📝 NOTA TÉCNICA</h4>
+            <div style="color: #333 !important; font-family: serif; font-size: 1rem; text-align: justify; line-height: 1.5;">
                 O <b>"Confisco"</b> calculado neste diagnóstico reflete o valor total subtraído do rendimento real do trabalhador. 
                 Ele não considera apenas a tarifa, mas o <b>valor monetário do tempo de vida</b> convertido em deslocamento. 
                 Na perspectiva da economia política, o trecho é <b>"trabalho não pago"</b>: um tempo obrigatório para a 
