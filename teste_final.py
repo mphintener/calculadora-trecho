@@ -127,7 +127,7 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         v_h_nom = sal / 176 if sal > 0 else 0
         sal_liq = sal - custo_m
         v_h_re = sal_liq / (176 + h_m) if (176 + h_m) > 0 else 0
-        confi = custo_m + (h_m * v_h_nom)
+        confi = custo_m + (h_m * v_h_nom) 
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
         
         # Resultados Visuais
