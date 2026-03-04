@@ -98,54 +98,73 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         confi = custo_m + (h_m * v_h_nom)
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
 
-        # FLUXO VISUAL
-        label_m = (dist_moradia or mun_moradia).upper()
-        label_t = (dist_trabalho or mun_trabalho).upper()
-        st.markdown(f"""<div style="background:#000; padding:20px; border:2px solid #E63946; text-align:center; margin-bottom:20px;">
-            <div style="color:#FFCC00; font-weight:bold; font-size:1.4rem;">🏠 {label_m} ———▶ 💼 {label_t}</div>
-        </div>""", unsafe_allow_html=True)
+        # ✅ SALVA OS RESULTADOS NO SESSION STATE
+        st.session_state["resultado"] = {
+            "v_h_nom": v_h_nom, "v_h_re": v_h_re, "h_m": h_m,
+            "confi": confi, "sal_liq_transp": sal_liq_transp,
+            "sobra": sobra, "depre": depre,
+            "label_m": (dist_moradia or mun_moradia).upper(),
+            "label_t": (dist_trabalho or mun_trabalho).upper(),
+            "genero": genero, "idade": idade, "cor_raca": cor_raca,
+            "escolaridade": escolaridade, "setor": setor,
+            "gasto_d": gasto_d, "sal": sal
+        }
 
-        # CAIXA DE RESULTADOS
-        cor_alerta = "#E63946" if depre > 20 else "#000000"
-        st.markdown(f"""<div class="report-box">
-            <h3 style="margin-top:0;">📋 RESULTADOS</h3>
-            <p>• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
-            <p>• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
-            <p>• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
-            <p>• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq_transp:.2f}</p>
-            <p>• 📉 <b>SOBRA RESIDUAL:</b> R$ {sobra:.2f}</p>
-            <p>• 📉 <b>DEPRECIAÇÃO REAL:</b> <span style="color:{cor_alerta}; font-weight:900; font-size:1.4rem;">{depre:.1f}%</span></p>
-        </div>""", unsafe_allow_html=True)
+# ✅ RENDERIZA OS RESULTADOS FORA DO BLOCO DO BOTÃO
+if "resultado" in st.session_state:
+    r = st.session_state["resultado"]
+    v_h_nom = r["v_h_nom"]; v_h_re = r["v_h_re"]; h_m = r["h_m"]
+    confi = r["confi"]; sal_liq_transp = r["sal_liq_transp"]
+    sobra = r["sobra"]; depre = r["depre"]
 
-        # NOTA TÉCNICA DETALHADA
-        st.markdown(f"""
-            <div style='background-color: #FFFFFF; padding: 25px; border-left: 12px solid #FFCC00; border: 1px solid #E0E0E0; border-radius: 8px; margin-top: 25px;'>
-                <h2 style='color: #000000; font-size: 1.3rem; margin-top: 0;'>📝 NOTA TÉCNICA</h2>
-                <div style='color: #333333; font-size: 1.1rem; line-height: 1.6; text-align: justify;'>
-                    O <b>"Confisco"</b> calculado reflete o valor total subtraído do rendimento real. 
-                    O trecho é <b>trabalho não pago</b>: tempo obrigatório para a reprodução da força de trabalho 
-                    que gera uma depreciação de <span style='color: #E63946; font-weight: bold;'>{depre:.1f}%</span> no valor da sua hora.
-                </div>
+    # FLUXO VISUAL
+    st.markdown(f"""<div style="background:#000; padding:20px; border:2px solid #E63946; text-align:center; margin-bottom:20px;">
+        <div style="color:#FFCC00; font-weight:bold; font-size:1.4rem;">🏠 {r['label_m']} ———▶ 💼 {r['label_t']}</div>
+    </div>""", unsafe_allow_html=True)
+
+    # CAIXA DE RESULTADOS
+    cor_alerta = "#E63946" if depre > 20 else "#000000"
+    st.markdown(f"""<div class="report-box">
+        <h3 style="margin-top:0;">📋 RESULTADOS</h3>
+        <p>• 💹 <b>VALOR DA HORA TRABALHADA:</b> De R$ {v_h_nom:.2f} para <span style="color:#E63946;">R$ {v_h_re:.2f}</span></p>
+        <p>• ⏳ <b>TEMPO DE TRABALHO NÃO PAGO:</b> {h_m:.1f}h/mês</p>
+        <p>• 💸 <b>VALOR DO CONFISCO (TARIFA + TEMPO):</b> R$ {confi:.2f}</p>
+        <p>• 💵 <b>SALÁRIO LÍQUIDO (-TRANSPORTE):</b> R$ {sal_liq_transp:.2f}</p>
+        <p>• 📉 <b>SOBRA RESIDUAL:</b> R$ {sobra:.2f}</p>
+        <p>• 📉 <b>DEPRECIAÇÃO REAL:</b> <span style="color:{cor_alerta}; font-weight:900; font-size:1.4rem;">{depre:.1f}%</span></p>
+    </div>""", unsafe_allow_html=True)
+
+    # NOTA TÉCNICA
+    st.markdown(f"""
+        <div style='background-color: #FFFFFF; padding: 25px; border-left: 12px solid #FFCC00; border: 1px solid #E0E0E0; border-radius: 8px; margin-top: 25px;'>
+            <h2 style='color: #000000; font-size: 1.3rem; margin-top: 0;'>📝 NOTA TÉCNICA</h2>
+            <div style='color: #333333; font-size: 1.1rem; line-height: 1.6; text-align: justify;'>
+                O <b>"Confisco"</b> calculado reflete o valor total subtraído do rendimento real. 
+                O trecho é <b>trabalho não pago</b>: tempo obrigatório para a reprodução da força de trabalho 
+                que gera uma depreciação de <span style='color: #E63946; font-weight: bold;'>{depre:.1f}%</span> no valor da sua hora.
             </div>
-        """, unsafe_allow_html=True)
+        </div>
+    """, unsafe_allow_html=True)
 
-        # SALVAMENTO AUTOMÁTICO (CORRIGIDO)
+    # SALVAMENTO NO GOOGLE SHEETS (só executa na primeira vez)
+    if not st.session_state.get("salvo"):
         try:
             nova_entrada = pd.DataFrame([{
                 "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
-                "Genero": genero, "Idade": idade, "Cor_Raca": cor_raca, 
-                "Escolaridade": escolaridade, "Setor": setor,
+                "Genero": r["genero"], "Idade": r["idade"], "Cor_Raca": r["cor_raca"],
+                "Escolaridade": r["escolaridade"], "Setor": r["setor"],
                 "Residencia": f"{mun_moradia} ({dist_moradia})",
                 "Trabalho": f"{mun_trabalho} ({dist_trabalho})",
-                "Transporte_Total": f"{gasto_d:.2f}",
-                "Salario_Bruto": f"{sal:.2f}",
+                "Transporte_Total": f"{r['gasto_d']:.2f}",
+                "Salario_Bruto": f"{r['sal']:.2f}",
                 "Confisco_Total": f"{confi:.2f}"
             }])
             conn.create(spreadsheet=URL_PLANILHA, data=nova_entrada)
+            st.session_state["salvo"] = True
             st.toast("✅ Sincronizado com a base de dados!")
         except:
             pass
 
-        # BOTÃO DE DOWNLOAD
-        relatorio_txt = f"DIAGNÓSTICO TÉCNICO\nCONFISCO: R$ {confi:.2f}\nDEPRECIAÇÃO: {depre:.1f}%"
-        st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico.txt")
+    # ✅ BOTÃO DE DOWNLOAD AGORA FUNCIONA CORRETAMENTE
+    relatorio_txt = f"DIAGNÓSTICO TÉCNICO\nCONFISCO: R$ {confi:.2f}\nDEPRECIAÇÃO: {depre:.1f}%"
+    st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico.txt")
