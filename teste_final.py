@@ -165,36 +165,49 @@ if "resultado" in st.session_state:
         except:
             pass
 
-    # ✅ BOTÃO DE DOWNLOAD AGORA FUNCIONA CORRETAMENTE
-    relatorio_txt = f"""CALCULADORA DO TRECHO — DIAGNÓSTICO TÉCNICO
-Data: {datetime.now().strftime("%d/%m/%Y %H:%M")}
-
-=== PERFIL DO USUÁRIO ===
-Idade: {r['idade']} anos
-Gênero: {r['genero']}
-Cor/Raça: {r['cor_raca']}
-Escolaridade: {r['escolaridade']}
-Setor: {r['setor']}
-
-=== LOCALIZAÇÃO ===
-Moradia: {r['label_m']}
-Trabalho: {r['label_t']}
-
-=== RESULTADOS ===
-Valor da Hora (nominal): R$ {v_h_nom:.2f}
-Valor da Hora (real):    R$ {v_h_re:.2f}
-Tempo não pago/mês:      {h_m:.1f}h
-Salário Líquido:         R$ {sal_liq_transp:.2f}
-Confisco Total:          R$ {confi:.2f}
-Depreciação Real:        {depre:.1f}%
-"""
+   # ✅ BOTÃO DE DOWNLOAD AGORA FUNCIONA CORRETAMENTE
+    relatorio_txt = (
+        f"CALCULADORA DO TRECHO — DIAGNÓSTICO TÉCNICO\n"
+        f"Data: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n"
+        f"\n=== PERFIL DO USUÁRIO ===\n"
+        f"Idade: {r['idade']} anos\n"
+        f"Gênero: {r['genero']}\n"
+        f"Cor/Raça: {r['cor_raca']}\n"
+        f"Escolaridade: {r['escolaridade']}\n"
+        f"Setor: {r['setor']}\n"
+        f"\n=== LOCALIZAÇÃO ===\n"
+        f"Moradia: {r['label_m']}\n"
+        f"Trabalho: {r['label_t']}\n"
+        f"\n=== RESULTADOS ===\n"
+        f"Valor da Hora (nominal): R$ {v_h_nom:.2f}\n"
+        f"Valor da Hora (real):    R$ {v_h_re:.2f}\n"
+        f"Tempo não pago/mês:      {h_m:.1f}h\n"
+        f"Salário Líquido:         R$ {sal_liq_transp:.2f}\n"
+        f"Confisco Total:          R$ {confi:.2f}\n"
+        f"Depreciação Real:        {depre:.1f}%\n"
+    )
+    st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico_trecho.txt")
+# Adicione este CSS junto com o CSS principal lá no topo
 st.markdown("""
     <style>
-    /* Isola o botão de download do estilo amarelo */
+    /* Botão principal de diagnóstico */
+    [data-testid="stButton"] > button {
+        background-color: #FFCC00 !important;
+        color: #000000 !important;
+        font-weight: 900 !important;
+        width: 100%;
+        height: 3.5em;
+        text-transform: uppercase;
+    }
+    /* Botão de download — estilo separado */
     [data-testid="stDownloadButton"] > button {
         background-color: #1a1a1a !important;
         color: #FFCC00 !important;
         border: 2px solid #FFCC00 !important;
+        font-weight: 900 !important;
+        width: 100%;
+        height: 3.5em;
+        text-transform: uppercase;
         margin-top: 20px;
     }
     </style>
