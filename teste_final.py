@@ -166,5 +166,37 @@ if "resultado" in st.session_state:
             pass
 
     # ✅ BOTÃO DE DOWNLOAD AGORA FUNCIONA CORRETAMENTE
-    relatorio_txt = f"DIAGNÓSTICO TÉCNICO\nCONFISCO: R$ {confi:.2f}\nDEPRECIAÇÃO: {depre:.1f}%"
-    st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico.txt")
+    relatorio_txt = f"""CALCULADORA DO TRECHO — DIAGNÓSTICO TÉCNICO
+Data: {datetime.now().strftime("%d/%m/%Y %H:%M")}
+
+=== PERFIL DO USUÁRIO ===
+Idade: {r['idade']} anos
+Gênero: {r['genero']}
+Cor/Raça: {r['cor_raca']}
+Escolaridade: {r['escolaridade']}
+Setor: {r['setor']}
+
+=== LOCALIZAÇÃO ===
+Moradia: {r['label_m']}
+Trabalho: {r['label_t']}
+
+=== RESULTADOS ===
+Valor da Hora (nominal): R$ {v_h_nom:.2f}
+Valor da Hora (real):    R$ {v_h_re:.2f}
+Tempo não pago/mês:      {h_m:.1f}h
+Salário Líquido:         R$ {sal_liq_transp:.2f}
+Confisco Total:          R$ {confi:.2f}
+Depreciação Real:        {depre:.1f}%
+"""
+   st.markdown("""
+    <style>
+    /* Isola o botão de download do estilo amarelo */
+    [data-testid="stDownloadButton"] > button {
+        background-color: #1a1a1a !important;
+        color: #FFCC00 !important;
+        border: 2px solid #FFCC00 !important;
+        margin-top: 20px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico_trecho.txt")
