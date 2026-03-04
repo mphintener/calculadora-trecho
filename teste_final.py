@@ -194,8 +194,7 @@ if "resultado" in st.session_state:
         f"Confisco Total:          R$ {confi:.2f}\n"
         f"Depreciacao Real:        {depre:.1f}%\n"
     )
-
-  if "resultado" in st.session_state:
+    if "resultado" in st.session_state:
     # ... todo o resto do código de resultados ...
 
     relatorio_txt = (
@@ -219,3 +218,5 @@ if "resultado" in st.session_state:
             file_name="diagnostico_trecho.txt",
             mime="text/plain"
         )
+
+  
