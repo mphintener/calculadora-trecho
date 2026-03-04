@@ -195,21 +195,27 @@ if "resultado" in st.session_state:
         f"Depreciacao Real:        {depre:.1f}%\n"
     )
 
-   _, col_dl, _ = st.columns([1, 2, 1])
-with col_dl:
-    st.markdown("""
-        <style>
-        /* Esconde o botão de download da classe stButton globalmente */
-        [data-testid="stDownloadButton"] button {
-            background-color: #1a1a1a !important;
-            color: #FFCC00 !important;
-            border: 2px solid #FFCC00 !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
-    st.download_button(
-        "📥 BAIXAR NOTA TÉCNICA (TXT)",
-        relatorio_txt,
-        file_name="diagnostico_trecho.txt",
-        mime="text/plain"
+  if "resultado" in st.session_state:
+    # ... todo o resto do código de resultados ...
+
+    relatorio_txt = (
+        # ... texto do relatório ...
     )
+
+    _, col_dl, _ = st.columns([1, 2, 1])
+    with col_dl:
+        st.markdown("""
+            <style>
+            [data-testid="stDownloadButton"] button {
+                background-color: #1a1a1a !important;
+                color: #FFCC00 !important;
+                border: 2px solid #FFCC00 !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+        st.download_button(
+            "📥 BAIXAR NOTA TÉCNICA (TXT)",
+            relatorio_txt,
+            file_name="diagnostico_trecho.txt",
+            mime="text/plain"
+        )
