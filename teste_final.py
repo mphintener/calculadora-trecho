@@ -215,4 +215,7 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+
+
 st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico_trecho.txt")
