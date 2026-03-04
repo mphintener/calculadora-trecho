@@ -34,12 +34,16 @@ st.markdown("""
     .report-box h3, .report-box p, .report-box b, .report-box span, .report-box div {
         color: #000000 !important;
     }
-    [data-testid="stButton"] > button {
+    /* Botão diagnóstico — amarelo */
+    [data-testid="stButton"] > button,
+    [data-testid="stBaseButton-secondary"] {
         background-color: #FFCC00 !important; color: #000000 !important;
         font-weight: 900 !important; width: 100%; height: 3.5em;
         text-transform: uppercase; border: none !important;
     }
-    [data-testid="stDownloadButton"] > button {
+    /* Botão download — escuro, sobrescreve o amarelo */
+    [data-testid="stDownloadButton"] > button,
+    [data-testid="stDownloadButton"] [data-testid="stBaseButton-secondary"] {
         background-color: #1a1a1a !important; color: #FFCC00 !important;
         border: 2px solid #FFCC00 !important; font-weight: 900 !important;
         width: 100%; height: 3.5em; text-transform: uppercase;
@@ -157,7 +161,14 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         v_h_re = sal_liq_transp / (176 + h_m) if (176 + h_m) > 0 else 0
         confi = custo_m + (h_m * v_h_nom)
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
-
+# ✅ COLE AQUI — monta os labels antes do session_state
+        label_m_partes = [mun_moradia]
+        if dist_moradia and dist_moradia.strip() and dist_moradia != " ":
+            label_m_partes.append(f"({dist_moradia})")
+        label_t_partes = [mun_trabalho]
+        if dist_trabalho and dist_trabalho.strip() and dist_trabalho != " ":
+            label_t_partes.append(f"({dist_trabalho})")
+        
         st.session_state["resultado"] = {
             "v_h_nom": v_h_nom,
             "v_h_re": v_h_re,
