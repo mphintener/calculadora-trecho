@@ -8,7 +8,7 @@ st.set_page_config(page_title="Calculadora do Trecho", layout="wide")
 conn = st.connection("gsheets", type=GSheetsConnection)
 URL_PLANILHA = "https://docs.google.com/spreadsheets/d/1VBatkCYcuBFLcLkiTAiD99EREaHbJfKpeXrc-MPx0xQ/edit#gid=0"
 
-# --- ESTILIZAÇÃO CSS (SEU DESIGN ORIGINAL) ---
+# --- ESTILIZAÇÃO CSS ---
 st.markdown("""
     <style>
     header, [data-testid="stHeader"], [data-testid="stStatusWidget"] { visibility: hidden; display: none; height: 0px; }
@@ -23,9 +23,14 @@ st.markdown("""
     }
     .report-box { background-color: #FFFFFF !important; padding: 25px; border: 5px solid #FFCC00; border-radius: 10px; color: #000000 !important; }
     .report-box p, .report-box b, .report-box h3, .report-box span { color: #000000 !important; }
-    .stButton>button { 
-        background-color: #FFCC00 !important; color: #000000 !important; 
+    [data-testid="stButton"] > button {
+        background-color: #FFCC00 !important; color: #000000 !important;
         font-weight: 900 !important; width: 100%; height: 3.5em; text-transform: uppercase;
+    }
+    [data-testid="stDownloadButton"] > button {
+        background-color: #1a1a1a !important; color: #FFCC00 !important;
+        border: 2px solid #FFCC00 !important; font-weight: 900 !important;
+        width: 100%; height: 3.5em; text-transform: uppercase; margin-top: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -39,7 +44,6 @@ with col_titulo:
             <p style="color: #FFCC00; font-size: 1.1rem; margin-top: 5px;">Quanto de tempo e de dinheiro são consumidos no seu deslocamento diário?</p>
         </div>
     """, unsafe_allow_html=True)
-
 with col_logo:
     try: st.image("logo.png", width=180)
     except: st.write("")
@@ -48,7 +52,7 @@ with col_logo:
 municipios_rmsp = [" "] + sorted(["Arujá", "Barueri", "Biritiba-Mirim", "Caieiras", "Cajamar", "Carapicuíba", "Cotia", "Diadema", "Embu das Artes", "Embu-Guaçu", "Ferraz de Vasconcelos", "Francisco Morato", "Franco da Rocha", "Guararema", "Guarulhos", "Itapecerica da Serra", "Itapevi", "Itaquaquecetuba", "Jandira", "Juquitiba", "Mairiporã", "Mauá", "Mogi das Cruzes", "Osasco", "Pirapora do Bom Jesus", "Poá", "Ribeirão Pires", "Rio Grande da Serra", "Salesópolis", "Santa Isabel", "Santana de Parnaíba", "Santo André", "São Bernardo do Campo", "São Caetano do Sul", "São Lourenço da Serra", "São Paulo", "Suzano", "Taboão da Serra", "Vargem Grande Paulista"])
 distritos_sp = [" "] + sorted(["Água Rasa", "Alto de Pinheiros", "Anhanguera", "Aricanduva", "Artur Alvim", "Barra Funda", "Bela Vista", "Belém", "Bom Retiro", "Brasilândia", "Butantã", "Cachoeirinha", "Cambuci", "Campo Belo", "Campo Grande", "Campo Limpo", "Cangaíba", "Capão Redondo", "Carrão", "Casa Verde", "Cidade Ademar", "Cidade Dutra", "Cidade Líder", "Cidade Tiradentes", "Consolação", "Cursino", "Ermelino Matarazzo", "Freguesia do Ó", "Grajaú", "Guaianases", "Iguatemi", "Ipiranga", "Itaim Bibi", "Itaim Paulista", "Itaquera", "Jabaquara", "Jaçanã", "Jaguara", "Jaguaré", "Jaraguá", "Jardim Ângela", "Jardim Helena", "Jardim Paulista", "Jardim São Luís", "Lapa", "Liberdade", "Limão", "Mandaqui", "Marsilac", "Moema", "Mooca", "Morumbi", "Parelheiros", "Pari", "Parque do Carmo", "Pedreira", "Penha", "Perdizes", "Perus", "Pinheiros", "Pirituba", "Ponte Rasa", "Raposo Tavares", "República", "Rio Pequeno", "Sacomã", "Santa Cecília", "Santana", "Santo Amaro", "São Domingos", "São Lucas", "São Mateus", "São Miguel", "São Rafael", "Sapopemba", "Saúde", "Sé", "Socorro", "Tatuapé", "Tremembé", "Tucuruvi", "Vila Andrade", "Vila Curuçá", "Vila Formosa", "Vila Guilherme", "Vila Jacuí", "Vila Leopoldina", "Vila Maria", "Vila Mariana", "Vila Matilde", "Vila Medeiros", "Vila Prudente", "Vila Sônia"])
 
-# 4. ENTRADA DE DADOS: PERFIL DO USUÁRIO
+# 4. ENTRADA DE DADOS
 st.markdown("### 👤 PERFIL DO USUÁRIO")
 p1, p2, p3, p4, p5 = st.columns(5)
 idade = p1.number_input("IDADE", min_value=14, step=1, value=25)
@@ -87,7 +91,6 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
     if mun_moradia == " " or sal <= 0:
         st.warning("⚠️ Preencha o município de moradia e o salário para gerar o diagnóstico.")
     else:
-        # CÁLCULOS
         gasto_d = g_on + g_me + g_tr + g_ap + g_ca
         custo_m = gasto_d * dias
         v_h_nom = sal / 176 if sal > 0 else 0
@@ -98,7 +101,6 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
         confi = custo_m + (h_m * v_h_nom)
         depre = (1 - (v_h_re / v_h_nom)) * 100 if v_h_nom > 0 else 0
 
-        # ✅ SALVA OS RESULTADOS NO SESSION STATE
         st.session_state["resultado"] = {
             "v_h_nom": v_h_nom, "v_h_re": v_h_re, "h_m": h_m,
             "confi": confi, "sal_liq_transp": sal_liq_transp,
@@ -107,22 +109,27 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
             "label_t": (dist_trabalho or mun_trabalho).upper(),
             "genero": genero, "idade": idade, "cor_raca": cor_raca,
             "escolaridade": escolaridade, "setor": setor,
-            "gasto_d": gasto_d, "sal": sal
+            "gasto_d": gasto_d, "sal": sal,
+            "mun_moradia": mun_moradia, "dist_moradia": dist_moradia,
+            "mun_trabalho": mun_trabalho, "dist_trabalho": dist_trabalho
         }
+        st.session_state["salvo"] = False
 
-# ✅ RENDERIZA OS RESULTADOS FORA DO BLOCO DO BOTÃO
+# 6. RENDERIZA RESULTADOS — TUDO DENTRO DO IF, BEM INDENTADO
 if "resultado" in st.session_state:
     r = st.session_state["resultado"]
-    v_h_nom = r["v_h_nom"]; v_h_re = r["v_h_re"]; h_m = r["h_m"]
-    confi = r["confi"]; sal_liq_transp = r["sal_liq_transp"]
-    sobra = r["sobra"]; depre = r["depre"]
+    v_h_nom = r["v_h_nom"]
+    v_h_re = r["v_h_re"]
+    h_m = r["h_m"]
+    confi = r["confi"]
+    sal_liq_transp = r["sal_liq_transp"]
+    sobra = r["sobra"]
+    depre = r["depre"]
 
-    # FLUXO VISUAL
     st.markdown(f"""<div style="background:#000; padding:20px; border:2px solid #E63946; text-align:center; margin-bottom:20px;">
         <div style="color:#FFCC00; font-weight:bold; font-size:1.4rem;">🏠 {r['label_m']} ———▶ 💼 {r['label_t']}</div>
     </div>""", unsafe_allow_html=True)
 
-    # CAIXA DE RESULTADOS
     cor_alerta = "#E63946" if depre > 20 else "#000000"
     st.markdown(f"""<div class="report-box">
         <h3 style="margin-top:0;">📋 RESULTADOS</h3>
@@ -134,27 +141,25 @@ if "resultado" in st.session_state:
         <p>• 📉 <b>DEPRECIAÇÃO REAL:</b> <span style="color:{cor_alerta}; font-weight:900; font-size:1.4rem;">{depre:.1f}%</span></p>
     </div>""", unsafe_allow_html=True)
 
-    # NOTA TÉCNICA
     st.markdown(f"""
         <div style='background-color: #FFFFFF; padding: 25px; border-left: 12px solid #FFCC00; border: 1px solid #E0E0E0; border-radius: 8px; margin-top: 25px;'>
             <h2 style='color: #000000; font-size: 1.3rem; margin-top: 0;'>📝 NOTA TÉCNICA</h2>
             <div style='color: #333333; font-size: 1.1rem; line-height: 1.6; text-align: justify;'>
-                O <b>"Confisco"</b> calculado reflete o valor total subtraído do rendimento real. 
-                O trecho é <b>trabalho não pago</b>: tempo obrigatório para a reprodução da força de trabalho 
+                O <b>"Confisco"</b> calculado reflete o valor total subtraído do rendimento real.
+                O trecho é <b>trabalho não pago</b>: tempo obrigatório para a reprodução da força de trabalho
                 que gera uma depreciação de <span style='color: #E63946; font-weight: bold;'>{depre:.1f}%</span> no valor da sua hora.
             </div>
         </div>
     """, unsafe_allow_html=True)
 
-    # SALVAMENTO NO GOOGLE SHEETS (só executa na primeira vez)
     if not st.session_state.get("salvo"):
         try:
             nova_entrada = pd.DataFrame([{
                 "Data": datetime.now().strftime("%d/%m/%Y %H:%M"),
                 "Genero": r["genero"], "Idade": r["idade"], "Cor_Raca": r["cor_raca"],
                 "Escolaridade": r["escolaridade"], "Setor": r["setor"],
-                "Residencia": f"{mun_moradia} ({dist_moradia})",
-                "Trabalho": f"{mun_trabalho} ({dist_trabalho})",
+                "Residencia": f"{r['mun_moradia']} ({r['dist_moradia']})",
+                "Trabalho": f"{r['mun_trabalho']} ({r['dist_trabalho']})",
                 "Transporte_Total": f"{r['gasto_d']:.2f}",
                 "Salario_Bruto": f"{r['sal']:.2f}",
                 "Confisco_Total": f"{confi:.2f}"
@@ -165,57 +170,29 @@ if "resultado" in st.session_state:
         except:
             pass
 
-   # ✅ BOTÃO DE DOWNLOAD AGORA FUNCIONA CORRETAMENTE
     relatorio_txt = (
         f"CALCULADORA DO TRECHO — DIAGNÓSTICO TÉCNICO\n"
         f"Data: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n"
         f"\n=== PERFIL DO USUÁRIO ===\n"
         f"Idade: {r['idade']} anos\n"
-        f"Gênero: {r['genero']}\n"
-        f"Cor/Raça: {r['cor_raca']}\n"
+        f"Genero: {r['genero']}\n"
+        f"Cor/Raca: {r['cor_raca']}\n"
         f"Escolaridade: {r['escolaridade']}\n"
         f"Setor: {r['setor']}\n"
-        f"\n=== LOCALIZAÇÃO ===\n"
+        f"\n=== LOCALIZACAO ===\n"
         f"Moradia: {r['label_m']}\n"
         f"Trabalho: {r['label_t']}\n"
         f"\n=== RESULTADOS ===\n"
         f"Valor da Hora (nominal): R$ {v_h_nom:.2f}\n"
         f"Valor da Hora (real):    R$ {v_h_re:.2f}\n"
-        f"Tempo não pago/mês:      {h_m:.1f}h\n"
-        f"Salário Líquido:         R$ {sal_liq_transp:.2f}\n"
+        f"Tempo nao pago/mes:      {h_m:.1f}h\n"
+        f"Salario Liquido:         R$ {sal_liq_transp:.2f}\n"
         f"Confisco Total:          R$ {confi:.2f}\n"
-        f"Depreciação Real:        {depre:.1f}%\n"
+        f"Depreciacao Real:        {depre:.1f}%\n"
     )
 
-
-
-
-# Adicione este CSS junto com o CSS principal lá no topo
-st.markdown("""
-    <style>
-    /* Botão principal de diagnóstico */
-    [data-testid="stButton"] > button {
-        background-color: #FFCC00 !important;
-        color: #000000 !important;
-        font-weight: 900 !important;
-        width: 100%;
-        height: 3.5em;
-        text-transform: uppercase;
-    }
-    /* Botão de download — estilo separado */
-    [data-testid="stDownloadButton"] > button {
-        background-color: #1a1a1a !important;
-        color: #FFCC00 !important;
-        border: 2px solid #FFCC00 !important;
-        font-weight: 900 !important;
-        width: 100%;
-        height: 3.5em;
-        text-transform: uppercase;
-        margin-top: 20px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
-
-st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico_trecho.txt")
+    st.download_button(
+        "📥 BAIXAR NOTA TÉCNICA (TXT)",
+        relatorio_txt,
+        file_name="diagnostico_trecho.txt"
+    )
