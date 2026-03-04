@@ -217,6 +217,6 @@ if "resultado" in st.session_state:
             relatorio_txt,
             file_name="diagnostico_trecho.txt",
             mime="text/plain"
-        )
+    )
 
   
