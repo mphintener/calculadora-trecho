@@ -188,7 +188,7 @@ Salário Líquido:         R$ {sal_liq_transp:.2f}
 Confisco Total:          R$ {confi:.2f}
 Depreciação Real:        {depre:.1f}%
 """
-   st.markdown("""
+  st.markdown("""
     <style>
     /* Isola o botão de download do estilo amarelo */
     [data-testid="stDownloadButton"] > button {
