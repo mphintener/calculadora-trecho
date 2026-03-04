@@ -110,8 +110,10 @@ if st.button("📊 EFETUAR DIAGNÓSTICO"):
             "genero": genero, "idade": idade, "cor_raca": cor_raca,
             "escolaridade": escolaridade, "setor": setor,
             "gasto_d": gasto_d, "sal": sal,
-            "mun_moradia": mun_moradia, "dist_moradia": dist_moradia,
-            "mun_trabalho": mun_trabalho, "dist_trabalho": dist_trabalho
+            "mun_moradia": mun_moradia,
+    "dist_moradia": dist_moradia if dist_moradia else mun_moradia,
+    "mun_trabalho": mun_trabalho,
+    "dist_trabalho": dist_trabalho if dist_trabalho else mun_trabalho,
         }
         st.session_state["salvo"] = False
 
@@ -180,8 +182,10 @@ if "resultado" in st.session_state:
         f"Escolaridade: {r['escolaridade']}\n"
         f"Setor: {r['setor']}\n"
         f"\n=== LOCALIZACAO ===\n"
-        f"Moradia: {r['label_m']}\n"
-        f"Trabalho: {r['label_t']}\n"
+        f"Municipio de Moradia:      {r['mun_moradia']}\n"
+        f"Bairro/Distrito (Moradia): {r['dist_moradia']}\n"
+        f"Municipio de Trabalho:     {r['mun_trabalho']}\n"
+        f"Bairro/Distrito (Trabalho):{r['dist_trabalho']}\n"
         f"\n=== RESULTADOS ===\n"
         f"Valor da Hora (nominal): R$ {v_h_nom:.2f}\n"
         f"Valor da Hora (real):    R$ {v_h_re:.2f}\n"
@@ -191,8 +195,21 @@ if "resultado" in st.session_state:
         f"Depreciacao Real:        {depre:.1f}%\n"
     )
 
+   _, col_dl, _ = st.columns([1, 2, 1])
+with col_dl:
+    st.markdown("""
+        <style>
+        /* Esconde o botão de download da classe stButton globalmente */
+        [data-testid="stDownloadButton"] button {
+            background-color: #1a1a1a !important;
+            color: #FFCC00 !important;
+            border: 2px solid #FFCC00 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
     st.download_button(
         "📥 BAIXAR NOTA TÉCNICA (TXT)",
         relatorio_txt,
-        file_name="diagnostico_trecho.txt"
+        file_name="diagnostico_trecho.txt",
+        mime="text/plain"
     )
