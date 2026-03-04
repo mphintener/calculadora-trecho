@@ -186,7 +186,10 @@ if "resultado" in st.session_state:
         f"Confisco Total:          R$ {confi:.2f}\n"
         f"Depreciação Real:        {depre:.1f}%\n"
     )
-    st.download_button("📥 BAIXAR NOTA TÉCNICA (TXT)", relatorio_txt, file_name="diagnostico_trecho.txt")
+
+
+
+
 # Adicione este CSS junto com o CSS principal lá no topo
 st.markdown("""
     <style>
